@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Cadastro - UF</title>
+</h:head>
+<h:body>
+
+	<p:growl id="mensagem" />
+
+	<h:form id="formListagem">
+		<p:panel id="painelListagem" header="Estados (UF)">
+			<p:dataTable emptyMessage="Nenhum registro encontrado!"
+				paginator="true" paginatorPosition="bottom" rows="5"
+				value="#{ufBean.estados}" var="estado">
+
+				<f:facet name="header">
+					<p:commandButton value="Novo" actionListener="#{ufBean.novo()}"
+						oncomplete="PF('dialogo').show();"
+						update=":mensagem :formCadastro:painelCadastro" />
+				</f:facet>
+
+				<p:column headerText="Estado">
+					<h:outputLabel value="#{estado.nome}" />
+				</p:column>
+
+				<p:column headerText="Sigla">
+					<h:outputLabel value="#{estado.sigla}" />
+				</p:column>
+				
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						actionListener="#{ufBean.excluir}"
+						update=":mensagem :formListagem:painelListagem">
+						<p:confirm header="Confirmação" message="Deseja excluir o estado?"
+							icon="ui-icon-alert" />
+						<f:attribute name="estadoSelecionado" value="#{estado}" />
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+						actionListener="#{ufBean.editar}"
+						oncomplete="PF('dialogo').show();"
+						update=":formCadastro:painelCadastro :formListagem:painelListagem">
+						<f:attribute name="estadoSelecionado" value="#{estado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="Sim" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="Não" type="button"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</h:form>
+
+	<p:dialog header="Cadastro - Estado" widgetVar="dialogo"
+		resizable="false" modal="true" closable="false">
+		<h:form id="formCadastro">
+			<p:panelGrid id="painelCadastro" columns="2">
+				<p:outputLabel for="estado" value="Estado" />
+				<p:inputText id="estado" maxlength="50" size="30"
+					value="#{ufBean.uf.nome}" />
+
+				<p:outputLabel for="sigla" value="Sigla" />
+				<p:inputText id="sigla" maxlength="2" size="10"
+					value="#{ufBean.uf.sigla}" />
+			</p:panelGrid>
+
+			<p:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{ufBean.salvar()}"
+					update=":mensagem :formListagem:painelListagem :formCadastro:painelCadastro"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>
